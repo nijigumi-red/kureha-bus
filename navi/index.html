@@ -6,215 +6,112 @@
 <title>呉羽いきいきバス 行路表示</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Oswald:wght@600;700&display=swap');
-
   :root {
-    --bg: #0a0e1a;
-    --surface: #111827;
-    --surface2: #1a2235;
-    --border: #2a3550;
-    --accent: #00d4ff;
-    --accent2: #ff6b35;
-    --green: #00e676;
-    --yellow: #ffeb3b;
-    --red: #ff4444;
-    --text: #e8edf5;
-    --muted: #6b7a99;
+    --bg:#0a0e1a; --surface:#111827; --surface2:#1a2235; --border:#2a3550;
+    --accent:#00d4ff; --accent2:#ff6b35; --green:#00e676; --yellow:#ffeb3b;
+    --red:#ff4444; --text:#e8edf5; --muted:#6b7a99;
   }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{background:var(--bg);color:var(--text);font-family:'BIZ UDPGothic',sans-serif;min-height:100dvh;overflow-x:hidden;}
 
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  #selector{display:flex;flex-direction:column;min-height:100dvh;padding:20px 16px 30px;}
+  .app-title{text-align:center;margin-bottom:20px;}
+  .app-title h1{font-size:1.3rem;font-weight:700;color:var(--accent);}
+  .app-title p{font-size:0.75rem;color:var(--muted);margin-top:4px;}
+  .sel-label{font-size:0.72rem;font-weight:700;letter-spacing:0.12em;color:var(--muted);margin-bottom:8px;margin-top:18px;}
+  .two-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .sel-btn{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:14px 10px;color:var(--text);font-family:'BIZ UDPGothic',sans-serif;font-size:0.95rem;font-weight:700;text-align:center;cursor:pointer;line-height:1.5;}
+  .sel-btn:active,.sel-btn.active{background:var(--accent);border-color:var(--accent);color:#000;}
+  .sel-btn .badge{display:block;font-size:0.62rem;font-weight:400;margin-top:4px;opacity:0.7;}
+  .flight-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+  .flight-btn{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:10px 4px;color:var(--text);font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;text-align:center;cursor:pointer;}
+  .flight-btn small{display:block;font-family:'BIZ UDPGothic',sans-serif;font-size:0.6rem;margin-top:2px;opacity:0.75;}
+  .flight-btn:active,.flight-btn.active{background:var(--accent2);border-color:var(--accent2);color:#fff;}
+  .start-btn{background:var(--green);border:none;border-radius:14px;padding:16px;font-family:'BIZ UDPGothic',sans-serif;font-size:1.1rem;font-weight:700;color:#000;cursor:pointer;margin-top:24px;}
+  .start-btn:disabled{background:var(--border);color:var(--muted);}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'BIZ UDPGothic', sans-serif;
-    min-height: 100dvh;
-    overflow-x: hidden;
-  }
-
-  #selector {
-    display: flex;
-    flex-direction: column;
-    min-height: 100dvh;
-    padding: 20px 16px 30px;
-  }
-
-  .app-title { text-align: center; margin-bottom: 24px; }
-  .app-title h1 { font-size: 1.3rem; font-weight: 900; color: var(--accent); letter-spacing: 0.05em; }
-  .app-title p  { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
-
-  .sel-label {
-    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
-    color: var(--muted); margin-bottom: 8px; margin-top: 20px;
-  }
-
-  .route-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-  .route-btn {
-    background: var(--surface); border: 2px solid var(--border); border-radius: 12px;
-    padding: 14px 10px; color: var(--text); font-family: 'BIZ UDPGothic', sans-serif;
-    font-size: 0.88rem; font-weight: 700; text-align: center; cursor: pointer;
-    transition: all 0.15s; line-height: 1.4;
-  }
-  .route-btn:active, .route-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
-  .route-btn .badge { display: block; font-size: 0.65rem; font-weight: 400; margin-top: 4px; opacity: 0.7; }
-
-  .flight-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-
-  .flight-btn {
-    background: var(--surface); border: 2px solid var(--border); border-radius: 8px;
-    padding: 10px 4px; color: var(--text); font-family: 'Oswald', sans-serif;
-    font-size: 1.1rem; font-weight: 700; text-align: center; cursor: pointer;
-    transition: all 0.15s;
-  }
-  .flight-btn:active, .flight-btn.active { background: var(--accent2); border-color: var(--accent2); color: #fff; }
-  .flight-btn small {
-    display: block; font-family: 'BIZ UDPGothic', sans-serif;
-    font-size: 0.6rem; font-weight: 400; margin-top: 2px; opacity: 0.75;
-  }
-
-  .start-btn {
-    background: var(--green); border: none; border-radius: 14px; padding: 16px;
-    font-family: 'BIZ UDPGothic', sans-serif; font-size: 1.1rem; font-weight: 900;
-    color: #000; cursor: pointer; margin-top: 28px; letter-spacing: 0.05em;
-  }
-  .start-btn:disabled { background: var(--border); color: var(--muted); }
-
-  #run-screen { display: none; flex-direction: column; min-height: 100dvh; }
-
-  #header {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--surface); border-bottom: 2px solid var(--border);
-    padding: 10px 16px 8px;
-  }
-  .route-line { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .route-badge {
-    background: var(--accent); color: #000;
-    font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 700;
-    padding: 2px 10px; border-radius: 4px;
-  }
-  .route-name { font-size: 0.9rem; font-weight: 700; flex: 1; }
-  .status-bar { display: flex; justify-content: space-between; align-items: center; }
-  .clock {
-    font-family: 'Oswald', sans-serif; font-size: 1.8rem; font-weight: 700;
-    color: var(--accent); letter-spacing: 0.05em; line-height: 1;
-  }
-  .delay-badge { font-size: 0.82rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; border: 2px solid; }
-  .d-ok   { color: var(--green);  border-color: var(--green); }
-  .d-warn { color: var(--yellow); border-color: var(--yellow); }
-  .d-late { color: var(--red);    border-color: var(--red); }
-
-  .gps-bar {
-    display: flex; align-items: center; gap: 6px; padding: 4px 16px;
-    background: #0d1422; font-size: 0.7rem; color: var(--muted);
-    border-bottom: 1px solid var(--border);
-  }
-  .gps-dot { width:7px; height:7px; border-radius:50%; background:var(--green); animation: blink 2s infinite; }
-  .gps-dot.searching { background: var(--yellow); animation: blink 0.5s infinite; }
-  .gps-dot.off { background: var(--red); animation: none; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-  #stop-list { padding: 8px 0 90px; }
-
-  .stop-item {
-    display: flex; align-items: stretch; padding: 0 16px; min-height: 62px;
-    border-bottom: 1px solid var(--border); transition: background 0.3s;
-  }
-  .stop-item.passed  { opacity: 0.35; }
-  .stop-item.current { background: rgba(0,212,255,0.08); border-left: 4px solid var(--accent); }
-  .stop-item.next    { background: rgba(255,107,53,0.08); border-left: 4px solid var(--accent2); }
-
-  .timeline { display:flex; flex-direction:column; align-items:center; width:28px; padding:0 4px; flex-shrink:0; }
-  .tl-top { width:2px; flex:1; background: var(--border); }
-  .tl-dot { width:11px; height:11px; border-radius:50%; border:2px solid var(--border); background:var(--bg); flex-shrink:0; }
-  .stop-item.passed  .tl-dot { background:#2a3550; border-color:#3d4f6e; }
-  .stop-item.current .tl-dot { background:var(--accent); border-color:var(--accent); box-shadow:0 0 8px var(--accent); }
-  .stop-item.next    .tl-dot { background:var(--accent2); border-color:var(--accent2); }
-  .tl-bot { width:2px; flex:1; background: var(--border); }
-
-  .stop-content { flex:1; display:flex; align-items:center; justify-content:space-between; padding:8px 0 8px 8px; }
-  .stop-info { flex:1; }
-  .stop-num  { font-size:0.62rem; color:var(--muted); margin-bottom:2px; }
-  .stop-name { font-size:1.1rem; font-weight:700; line-height:1.2; }
-  .stop-item.passed  .stop-name { color:#3d4f6e; }
-  .stop-item.current .stop-name { color:var(--accent); font-size:1.2rem; }
-  .stop-item.next    .stop-name { color:#fff; }
-  .stop-note { font-size:0.68rem; color:var(--muted); margin-top:2px; }
-
-  .time-block { text-align:right; flex-shrink:0; }
-  .sched-time { font-family:'Oswald',sans-serif; font-size:1.55rem; font-weight:700; line-height:1; }
-  .stop-item.passed  .sched-time { color:#3d4f6e; }
-  .stop-item.current .sched-time { color:var(--accent); font-size:1.75rem; }
-  .stop-item.next    .sched-time { color:var(--accent2); }
-  .diff-time { font-size:0.7rem; font-weight:700; text-align:right; margin-top:2px; }
-  .d-e { color:var(--green); } .d-o { color:var(--muted); } .d-l { color:var(--red); }
-
-  #next-float {
-    position:fixed; bottom:0; left:0; right:0;
-    background:var(--accent2); padding:10px 20px;
-    display:flex; justify-content:space-between; align-items:center;
-    z-index:200; box-shadow:0 -4px 20px rgba(0,0,0,0.5);
-  }
-  .nf-label { font-size:0.7rem; font-weight:700; letter-spacing:0.15em; color:rgba(255,255,255,0.7); }
-  .nf-name  { font-size:1.35rem; font-weight:900; color:#fff; line-height:1.1; }
-  .nf-time  { font-family:'Oswald',sans-serif; font-size:2rem; font-weight:700; color:#fff; }
-
-  .back-btn {
-    position:fixed; top:14px; right:16px; z-index:400;
-    background:var(--surface2); border:1px solid var(--border);
-    color:var(--muted); font-size:0.72rem; padding:5px 10px;
-    border-radius:6px; cursor:pointer; font-family:'Noto Sans JP',sans-serif;
-  }
+  #run-screen{display:none;flex-direction:column;min-height:100dvh;}
+  #header{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:2px solid var(--border);padding:10px 16px 8px;}
+  .route-line{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .route-badge{background:var(--accent);color:#000;font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;padding:2px 10px;border-radius:4px;}
+  .route-name{font-size:0.9rem;font-weight:700;flex:1;}
+  .status-bar{display:flex;justify-content:space-between;align-items:center;}
+  .clock{font-family:'Oswald',sans-serif;font-size:2.6rem;font-weight:700;color:var(--accent);letter-spacing:0.05em;line-height:1;}
+  .delay-badge{font-size:0.82rem;font-weight:700;padding:3px 10px;border-radius:20px;border:2px solid;}
+  .d-ok{color:var(--green);border-color:var(--green);}
+  .d-warn{color:var(--yellow);border-color:var(--yellow);}
+  .d-late{color:var(--red);border-color:var(--red);}
+  .gps-bar{display:flex;align-items:center;gap:6px;padding:4px 16px;background:#0d1422;font-size:0.7rem;color:var(--muted);border-bottom:1px solid var(--border);}
+  .gps-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+  .gps-dot.searching{background:var(--yellow);animation:blink 0.5s infinite;}
+  .gps-dot.off{background:var(--red);animation:none;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+  #approach-banner{display:none;position:sticky;top:0;z-index:95;background:var(--green);color:#000;text-align:center;padding:10px;font-weight:700;font-size:1rem;animation:flash 0.8s infinite;}
+  @keyframes flash{0%,100%{opacity:1}50%{opacity:0.6}}
+  #stop-list{padding:8px 0 30px;}
+  .stop-item{display:flex;align-items:stretch;padding:0 16px;min-height:62px;border-bottom:1px solid var(--border);transition:background 0.3s;}
+  .stop-item.passed{display:none;}
+  .stop-item.passed.last{display:flex;opacity:0.45;}
+  .stop-item.current{background:rgba(0,212,255,0.1);border-left:4px solid var(--accent);}
+  .stop-item.next{background:rgba(255,107,53,0.35);border-left:4px solid var(--accent2);}
+  .stop-item.notime{opacity:0.5;}
+  .timeline{display:flex;flex-direction:column;align-items:center;width:28px;padding:0 4px;flex-shrink:0;}
+  .tl-top{width:2px;flex:1;background:var(--border);}
+  .tl-dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--border);background:var(--bg);flex-shrink:0;}
+  .stop-item.passed .tl-dot{background:#2a3550;border-color:#3d4f6e;}
+  .stop-item.current .tl-dot{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px var(--accent);}
+  .stop-item.next .tl-dot{background:var(--accent2);border-color:var(--accent2);}
+  .tl-bot{width:2px;flex:1;background:var(--border);}
+  .stop-content{flex:1;display:flex;align-items:center;justify-content:space-between;padding:8px 0 8px 8px;}
+  .stop-info{flex:1;}
+  .stop-num{font-size:0.62rem;color:var(--muted);margin-bottom:2px;}
+  .stop-name{font-size:1.2rem;font-weight:700;line-height:1.2;}
+  .stop-item.passed .stop-name{color:#3d4f6e;}
+  .stop-item.current .stop-name{color:var(--accent);font-size:1.6rem;}
+  .stop-item.next .stop-name{color:#fff;font-size:1.35rem;}
+  .stop-dist{font-size:0.7rem;color:var(--muted);margin-top:2px;}
+  .time-block{text-align:right;flex-shrink:0;}
+  .sched-time{font-family:'Oswald',sans-serif;font-size:1.55rem;font-weight:700;line-height:1;}
+  .stop-item.passed .sched-time{color:#3d4f6e;}
+  .stop-item.current .sched-time{color:var(--accent);font-size:2rem;}
+  .stop-item.next .sched-time{color:var(--accent2);font-size:1.7rem;}
+  .diff-time{font-size:1rem;font-weight:700;text-align:right;margin-top:2px;}
+  .d-e{color:var(--red);}.d-o{color:var(--muted);}.d-l{color:var(--muted);}
+  .back-btn{position:fixed;top:14px;right:16px;z-index:400;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:0.72rem;padding:5px 10px;border-radius:6px;cursor:pointer;font-family:'BIZ UDPGothic',sans-serif;}
+  .manual-btn{position:fixed;bottom:16px;right:16px;z-index:300;background:var(--surface2);border:2px solid var(--border);color:var(--muted);font-size:0.72rem;padding:8px 12px;border-radius:8px;cursor:pointer;font-family:'BIZ UDPGothic',sans-serif;}
 </style>
 </head>
 <body>
 
-<!-- 便選択画面 -->
 <div id="selector">
   <div class="app-title">
     <h1>🚌 呉羽いきいきバス</h1>
     <p>行路時刻表示システム</p>
   </div>
 
-  <div class="sel-label">ルート選択</div>
-  <div class="route-btns">
-    <button class="route-btn" onclick="selectRoute('nagaoka', this)">
-      長岡・寒江ルート
-      <span class="badge">通常便 1〜9便</span>
-    </button>
-    <button class="route-btn" onclick="selectRoute('morning_nk', this)">
-      長岡・寒江<br>モーニング
-      <span class="badge">朝の通学便</span>
-    </button>
-    <button class="route-btn" onclick="selectRoute('oita', this)">
-      老田・古沢・池多<br>通常便
-      <span class="badge">1,3,5,7,9,10便</span>
-    </button>
-    <button class="route-btn" onclick="selectRoute('mikuma', this)">
-      老田・古沢・池多<br>三熊便
-      <span class="badge">2,4,6,8便</span>
-    </button>
-    <button class="route-btn" onclick="selectRoute('morning_oi', this)">
-      老田・古沢・池多<br>モーニング
-      <span class="badge">朝の通学便</span>
-    </button>
+  <div class="sel-label">① ルート選択</div>
+  <div class="two-btns">
+    <button class="sel-btn" onclick="selectRoute('nkm', this)">長岡・寒江<br>モーニング<span class="badge">通学便</span></button>
+    <button class="sel-btn" onclick="selectRoute('oim', this)">老田・古沢・池多<br>モーニング<span class="badge">通学便</span></button>
+    <button class="sel-btn" onclick="selectRoute('nk', this)">長岡・寒江ルート<span class="badge">通常便 1〜10便</span></button>
+    <button class="sel-btn" onclick="selectRoute('oi', this)">老田・古沢・池多<br>通常便<span class="badge">1,3,5,7,9,10便</span></button>
+    <div></div>
+    <button class="sel-btn" onclick="selectRoute('mk', this)">老田・古沢・池多<br>三熊便<span class="badge">2,4,6,8便</span></button>
   </div>
 
   <div id="flight-section" style="display:none;">
-    <div class="sel-label" style="margin-top:20px;">便数選択</div>
+    <div class="sel-label">② 便選択</div>
     <div class="flight-grid" id="flight-grid"></div>
   </div>
 
-  <button class="start-btn" id="start-btn" onclick="startRun()" disabled>
-    ▶ この便を表示する
-  </button>
+  <button class="start-btn" id="start-btn" onclick="startRun()" disabled>▶ この便を表示する</button>
 </div>
 
-<!-- 運行画面 -->
 <div id="run-screen">
   <div id="header">
     <div class="route-line">
       <span class="route-badge" id="rte-badge">系統</span>
-      <span class="route-name"  id="rte-name">---</span>
+      <span class="route-name" id="rte-name">---</span>
     </div>
     <div class="status-bar">
       <div class="clock" id="clock">--:--:--</div>
@@ -225,391 +122,242 @@
     <div class="gps-dot searching" id="gps-dot"></div>
     <span id="gps-text">GPS取得中...</span>
   </div>
+  <div id="approach-banner">🚏 バス停に接近しています</div>
   <div id="stop-list"></div>
-  <div id="next-float">
-    <div>
-      <div class="nf-label">次停留所</div>
-      <div class="nf-name" id="float-stop">---</div>
-    </div>
-    <div class="nf-time" id="float-time">--:--</div>
-  </div>
+  <button class="manual-btn" onclick="manualAdvance()">手動 ▶</button>
   <button class="back-btn" onclick="goBack()">◀ 便選択</button>
 </div>
 
 <script>
-// ===================================================
-// 1. ユーティリティ（最初に定義）
-// ===================================================
-function pad(n) { return String(n).padStart(2, '0'); }
+// ===== ユーティリティ =====
+function pad(n){return String(n).padStart(2,'0');}
+function timeToSec(t){if(!t)return null;var p=t.split(':');return Number(p[0])*3600+Number(p[1])*60;}
+function nowSec(){var n=new Date();return n.getHours()*3600+n.getMinutes()*60+n.getSeconds();}
+function calcDist(la1,lo1,la2,lo2){var R=6371000,dLa=(la2-la1)*Math.PI/180,dLo=(lo2-lo1)*Math.PI/180,a=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dLo/2)*Math.sin(dLo/2);return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
 
-function timeToMin(t) {
-  if (!t) return null;
-  var parts = t.split(':');
-  return Number(parts[0]) * 60 + Number(parts[1]);
-}
+// ===== 時刻・座標データ =====
+var NK_STOPS=["呉羽駅","高木公民館","大塚","呉羽野田公民館","大塚北（利波）","中沖北","中沖南","本郷中部","富山短期大学前","あらき接骨院","願海寺","大阪屋ショップ呉羽店","すぎき整形外科","アルビス呉羽本郷店","野口","しぶたに医院","呉羽駅","呉羽地区センター","カーマ・アルビス呉羽東","安元整形外科医院","岩城内科医院","緑化植物公園","谷野呉山病院","北代4区公民館","長岡新公民館","八ヶ山公民館","長岡小学校","加茂神社","北代会館","あさひホーム横","北代藤ケ丘","富田町","呉羽苑口","マルトミ鉱泉","松野リウマチ整形外科","呉羽小学校","呉羽本町北"];
+var NK_GEO=[{name:"呉羽駅",lat:36.718089,lon:137.165879},{name:"高木公民館",lat:36.724038,lon:137.163728},{name:"大塚",lat:36.729883,lon:137.162818},{name:"呉羽野田公民館",lat:36.734335,lon:137.169782},{name:"大塚北（利波）",lat:36.740101,lon:137.166158},{name:"中沖北",lat:36.739163,lon:137.158981},{name:"中沖南",lat:36.73408,lon:137.155855},{name:"本郷中部",lat:36.728925,lon:137.152668},{name:"富山短期大学前",lat:36.721593,lon:137.140587},{name:"あらき接骨院",lat:36.720433,lon:137.140612},{name:"願海寺",lat:36.717141,lon:137.131834},{name:"大阪屋ショップ呉羽店",lat:36.721286,lon:137.146885},{name:"すぎき整形外科",lat:36.721894,lon:137.14942},{name:"アルビス呉羽本郷店",lat:36.723603,lon:137.149936},{name:"野口",lat:36.718404,lon:137.15357},{name:"しぶたに医院",lat:36.715222,lon:137.160867},{name:"呉羽駅",lat:36.718115,lon:137.165957},{name:"呉羽地区センター",lat:36.713223,lon:137.164157},{name:"カーマ・アルビス呉羽東",lat:36.710437,lon:137.170529},{name:"安元整形外科医院",lat:36.708209,lon:137.178561},{name:"岩城内科医院",lat:36.710579,lon:137.179748},{name:"緑化植物公園",lat:36.71402,lon:137.181436},{name:"谷野呉山病院",lat:36.714187,lon:137.183366},{name:"北代4区公民館",lat:36.713586,lon:137.187523},{name:"長岡新公民館",lat:36.714956,lon:137.192651},{name:"八ヶ山公民館",lat:36.721625,lon:137.19499},{name:"長岡小学校",lat:36.719674,lon:137.18956},{name:"加茂神社",lat:36.719434,lon:137.185435},{name:"北代会館",lat:36.719861,lon:137.181325},{name:"あさひホーム横",lat:36.72018,lon:137.176412},{name:"北代藤ケ丘",lat:36.716821,lon:137.179081},{name:"富田町",lat:36.715211,lon:137.176931},{name:"呉羽苑口",lat:36.715293,lon:137.173253},{name:"マルトミ鉱泉",lat:36.712234,lon:137.172156},{name:"松野リウマチ整形外科",lat:36.711737,lon:137.171528},{name:"呉羽小学校",lat:36.714617,lon:137.169048},{name:"呉羽本町北",lat:36.714346,lon:137.164927}];
+var NK_FLIGHTS={"1":["08:20","08:22","08:23","08:25","08:27","08:28","08:29","08:30","08:34","08:35","08:36",null,"08:40",null,"08:43","08:46","08:54","08:56","08:58","09:00","09:00","09:01","09:02","09:03","09:04","09:06","09:07","09:08","09:10","09:11","09:12","09:14","09:15","09:16","09:16","09:17","09:18"],"2":["09:30","09:32","09:33","09:35","09:37","09:38","09:39","09:40","09:44","09:45","09:46","09:49","09:51","09:54","09:56","09:58","10:05","10:07","10:09","10:11","10:11","10:12","10:13","10:14","10:15","10:17","10:18","10:19","10:21","10:22","10:23","10:25","10:26","10:27","10:27","10:28","10:29"],"3":["10:40","10:42","10:43","10:45","10:47","10:48","10:49","10:50","10:54","10:55","10:56","10:59","11:01","11:04","11:06","11:08","11:15","11:17","11:19","11:21","11:21","11:22","11:23","11:24","11:25","11:27","11:28","11:29","11:31","11:32","11:33","11:35","11:36","11:37","11:37","11:38","11:39"],"4":["11:50","11:52","11:53","11:55","11:57","11:58","11:59","12:00","12:04","12:05","12:06","12:09","12:11","12:14","12:16","12:18","12:25","12:27","12:29","12:31","12:31","12:32","12:33","12:34","12:35","12:37","12:38","12:39","12:41","12:42","12:43","12:45","12:46","12:47","12:47","12:48","12:49"],"5":["13:00","13:02","13:03","13:05","13:07","13:08","13:09","13:10","13:14","13:15","13:16","13:19","13:21","13:24","13:26","13:28","13:35","13:37","13:39","13:41","13:41","13:42","13:43","13:44","13:45","13:47","13:48","13:49","13:51","13:52","13:53","13:55","13:56","13:57","13:57","13:58","13:59"],"6":["14:10","14:12","14:13","14:15","14:17","14:18","14:19","14:20","14:24","14:25","14:26","14:29","14:31","14:34","14:36","14:38","14:45","14:47","14:49","14:51","14:51","14:52","14:53","14:54","14:55","14:57","14:58","14:59","15:01","15:02","15:03","15:05","15:06","15:07","15:07","15:08","15:09"],"7":["15:20","15:22","15:23","15:25","15:27","15:28","15:29","15:30","15:34","15:35","15:36","15:39","15:41","15:44","15:46","15:48","15:55","15:57","15:59","16:01","16:01","16:02","16:03","16:04","16:05","16:07","16:08","16:09","16:11","16:12","16:13","16:15","16:16","16:17","16:17","16:18","16:19"],"8":["16:30","16:32","16:33","16:35","16:37","16:38","16:39","16:40","16:44","16:45","16:46","16:49","16:51","16:54","16:56","16:58","17:05","17:07","17:09","17:11","17:11","17:12","17:13","17:14","17:15","17:17","17:18","17:19","17:21","17:22","17:23","17:25","17:26","17:27","17:27","17:28","17:29"],"9":["17:40","17:42","17:43","17:45","17:47","17:48","17:49","17:50","17:54","17:55","17:56","17:59","18:01","18:04","18:06","18:08","18:15","18:17","18:19","18:21","18:21","18:22","18:23","18:24","18:25","18:27","18:28","18:29","18:31","18:32","18:33","18:35","18:36","18:37","18:37","18:38","18:39"],"10":["18:50","18:52","18:53","18:55","18:57","18:58","18:59","19:00","19:04","19:05","19:06","19:09","19:11","19:14","19:16","19:18","19:25","19:27","19:29","19:31","19:31","19:32","19:33","19:34","19:35","19:37","19:38","19:39","19:41","19:42","19:43","19:45","19:46","19:47","19:47","19:48","19:49"]};
 
-function nowMin() {
-  var n = new Date();
-  return n.getHours() * 60 + n.getMinutes() + n.getSeconds() / 60;
-}
+var NKM_STOPS=["北代4区公民館","長岡新公民館","八ヶ山公民館","長岡小学校","加茂神社","北代会館","あさひホーム横","北代藤ケ丘","JA呉羽支店","呉羽駅","大塚","呉羽野田公民館","大塚北（利波）","中沖北","中沖南","本郷中部","富山短期大学前","あらき接骨院","願海寺","寒江口","野口","しぶたに医院","呉羽駅（到着）"];
+var NKM_GEO=[{name:"北代4区公民館",lat:36.713586,lon:137.187523},{name:"長岡新公民館",lat:36.714956,lon:137.192651},{name:"八ヶ山公民館",lat:36.721625,lon:137.19499},{name:"長岡小学校",lat:36.719674,lon:137.18956},{name:"加茂神社",lat:36.719434,lon:137.185435},{name:"北代会館",lat:36.719861,lon:137.181325},{name:"あさひホーム横",lat:36.72018,lon:137.176412},{name:"北代藤ケ丘",lat:36.716821,lon:137.179081},{name:"JA呉羽支店",lat:36.711318,lon:137.167947},{name:"呉羽駅",lat:36.718089,lon:137.165879},{name:"大塚",lat:36.729883,lon:137.162818},{name:"呉羽野田公民館",lat:36.734335,lon:137.169782},{name:"大塚北（利波）",lat:36.740101,lon:137.166158},{name:"中沖北",lat:36.739163,lon:137.158981},{name:"中沖南",lat:36.73408,lon:137.155855},{name:"本郷中部",lat:36.728925,lon:137.152668},{name:"富山短期大学前",lat:36.721593,lon:137.140587},{name:"あらき接骨院",lat:36.720433,lon:137.140612},{name:"願海寺",lat:36.719829,lon:137.143503},{name:"寒江口",lat:36.719687,lon:137.150094},{name:"野口",lat:36.718404,lon:137.15357},{name:"しぶたに医院",lat:36.715222,lon:137.160867},{name:"呉羽駅（到着）",lat:36.718115,lon:137.165957}];
+var NKM_FLIGHTS={"通学":["07:12","07:13","07:15","07:16","07:17","07:19","07:20","07:22","07:27","07:30","07:35","07:37","07:38","07:39","07:40","07:41","07:46","07:47","07:48","07:50","07:51","07:55",null]};
 
-// flat配列 [h,m, h,m, ...] + バス停名配列 → stops配列
-function buildStops(names, flat) {
-  var stops = [];
-  for (var i = 0; i < names.length; i++) {
-    var h = flat[i * 2];
-    var m = flat[i * 2 + 1];
-    if (h != null && m != null) {
-      stops.push({ name: names[i], time: pad(h) + ':' + pad(m) });
-    }
-  }
-  return stops;
-}
+var OI_STOPS=["呉羽駅","呉羽小学校","松野リウマチ整形外科","郵便局・アルビス呉羽東店","茶屋口","追分茶屋","ケアサポート・まき","吉作","住吉","花の木","西金屋","ｶﾞﾗｽ工房・ﾌｧﾐﾘｰﾊﾟｰｸ","杉谷郵便局","杉谷公民館","富山大学附属病院","境野新公民館","平岡","西押川","北押川","古沢保育所","栃谷","佐伯クリニック","特老ホームくれは苑","東老田南","東老田","老田地区センター","老田小学校","西二俣公民館","願海寺","すぎき整形外科","アルビス呉羽本郷店","大阪屋ショップ呉羽店","梨雲苑","中道歯科医院","吉作北","呉羽本町南","呉羽駅（到着）"];
+var OI_GEO=[{name:"呉羽駅",lat:36.718089,lon:137.165879},{name:"呉羽小学校",lat:36.714567,lon:137.169755},{name:"松野リウマチ整形外科",lat:36.711778,lon:137.171534},{name:"郵便局・アルビス呉羽東店",lat:36.709971,lon:137.171833},{name:"茶屋口",lat:36.707464,lon:137.1726},{name:"追分茶屋",lat:36.707522,lon:137.168952},{name:"ケアサポート・まき",lat:36.706592,lon:137.163123},{name:"吉作",lat:36.706174,lon:137.15983},{name:"住吉",lat:36.703388,lon:137.154641},{name:"花の木",lat:36.701263,lon:137.148957},{name:"西金屋",lat:36.697978,lon:137.147445},{name:"ｶﾞﾗｽ工房・ﾌｧﾐﾘｰﾊﾟｰｸ",lat:36.695652,lon:137.146288},{name:"杉谷郵便局",lat:36.683548,lon:137.137893},{name:"杉谷公民館",lat:36.686065,lon:137.138747},{name:"富山大学附属病院",lat:36.680614,lon:137.140458},{name:"境野新公民館",lat:36.674925,lon:137.133414},{name:"平岡",lat:36.673178,lon:137.127223},{name:"西押川",lat:36.682754,lon:137.121852},{name:"北押川",lat:36.682107,lon:137.126828},{name:"古沢保育所",lat:36.690969,lon:137.140101},{name:"栃谷",lat:36.694336,lon:137.135127},{name:"佐伯クリニック",lat:36.695161,lon:137.133252},{name:"特老ホームくれは苑",lat:36.699917,lon:137.131161},{name:"東老田南",lat:36.701269,lon:137.138621},{name:"東老田",lat:36.706619,lon:137.140026},{name:"老田地区センター",lat:36.707696,lon:137.134596},{name:"老田小学校",lat:36.708147,lon:137.131503},{name:"西二俣公民館",lat:36.717141,lon:137.131834},{name:"願海寺",lat:36.717141,lon:137.131834},{name:"すぎき整形外科",lat:36.721894,lon:137.14942},{name:"アルビス呉羽本郷店",lat:36.723603,lon:137.149936},{name:"大阪屋ショップ呉羽店",lat:36.721286,lon:137.146885},{name:"梨雲苑",lat:36.7116,lon:137.153184},{name:"中道歯科医院",lat:36.712857,lon:137.155543},{name:"吉作北",lat:36.711267,lon:137.162174},{name:"呉羽本町南",lat:36.713081,lon:137.163186},{name:"呉羽駅（到着）",lat:36.718089,lon:137.165879}];
+var OI_FLIGHTS={"1":["08:20","08:21","08:22","08:23","08:24","08:25","08:26","08:26","08:27","08:28","08:28","08:29","08:34","08:34","08:41","08:44","08:45","08:47","08:48","08:51","08:52","08:53","08:55","08:57","08:58","08:59","08:59","09:01","09:04","09:06",null,null,"09:18","09:19","09:20","09:20",null],"3":["10:40","10:41","10:42","10:43","10:44","10:45","10:46","10:46","10:47","10:48","10:48","10:49","10:54","10:54","11:01","11:04","11:05","11:07","11:08","11:11","11:12","11:13","11:15","11:17","11:18","11:19","11:19","11:21","11:24","11:26","11:28","11:32","11:38","11:39","11:40","11:40",null],"5":["13:00","13:01","13:02","13:03","13:04","13:05","13:06","13:06","13:07","13:08","13:08","13:09","13:14","13:14","13:21","13:24","13:25","13:27","13:28","13:31","13:32","13:33","13:35","13:37","13:38","13:39","13:39","13:41","13:44","13:46","13:48","13:52","13:58","13:59","14:00","14:00",null],"7":["15:20","15:21","15:22","15:23","15:24","15:25","15:26","15:26","15:27","15:28","15:28","15:29","15:34","15:34","15:41","15:44","15:45","15:47","15:48","15:51","15:52","15:53","15:55","15:57","15:58","15:59","15:59","16:01","16:04","16:06","16:08","16:12","16:18","16:19","16:20","16:20",null],"9":["17:40","17:41","17:42","17:43","17:44","17:45","17:46","17:46","17:47","17:48","17:48","17:49","18:54","17:54","18:01","18:04","18:05","18:07","18:08","18:11","18:12","18:13","18:15","18:17","18:18","18:19","18:19","18:21","18:24","18:26","18:28","18:32","18:38","18:39","18:40","18:40",null],"10":["18:50","18:51","18:52","18:53","18:54","18:55","18:56","18:56","18:57","18:58","18:58","18:59","19:04","19:04","19:11","19:14","19:15","19:17","19:18","19:21","19:22","19:23","19:25","19:27","19:28","19:29","19:29","19:31","19:34","19:36","19:38","19:42","19:48","19:49","19:50","19:50",null]};
 
-// ===================================================
-// 2. バス停名リスト（buildStopsより後、SCHEDULESより前）
-// ===================================================
-var NK_STOPS = [
-  "呉羽駅","高木公民館","大塚","大塚野田公民館","大塚北(利波)",
-  "中沖北","中沖南","本郷中部","呉羽野田大学前","あらき接骨院",
-  "願海寺","大阪屋ショップ呉羽店","すぎき整形外科","アルビス呉羽本郷店","野口",
-  "しぶたに医院","呉羽駅","呉羽地区センター","カーマ・アルビス呉羽売場",
-  "安元整形外科医院","岩城内科医院","緑化植物公園","谷野呉山病院",
-  "北4区公民館","長岡新公民館","八ヶ山公民館","長岡小学校","加茂神社",
-  "北代会館","あさひホーム横","北代藤ケ丘","富田町","呉羽苑口",
-  "松野リウマチ整形外科","呉羽苑公園","呉羽木町北","呉羽駅"
-];
+var MK_STOPS=["呉羽駅","呉羽小学校","松野リウマチ整形外科","カーマ・アルビス呉羽東店","わかぐり内科医院","追分茶屋公民館","ケアサポート・まき","吉作","住吉","花の木","西金屋","ｶﾞﾗｽ工房・ﾌｧﾐﾘｰﾊﾟｰｸ","杉谷公民館","富山大学附属病院","境野新公民館","平岡","開ヶ丘","三熊","山本","山本公民館","西押川","北押川","古沢地区センター","栃谷","佐伯クリニック","特老ホームくれは苑","中老田公民館","JA南部支店","東老田","願海寺","大阪屋ショップ呉羽店","すぎき整形外科","アルビス呉羽本郷店","芸術創造センター","呉羽駅（到着）"];
+var MK_GEO=[{name:"呉羽駅",lat:36.718089,lon:137.165879},{name:"呉羽小学校",lat:36.714567,lon:137.169755},{name:"松野リウマチ整形外科",lat:36.711778,lon:137.171534},{name:"カーマ・アルビス呉羽東店",lat:36.710511,lon:137.170043},{name:"わかぐり内科医院",lat:36.710489,lon:137.169298},{name:"追分茶屋公民館",lat:36.708347,lon:137.168822},{name:"ケアサポート・まき",lat:36.706592,lon:137.163123},{name:"吉作",lat:36.706174,lon:137.15983},{name:"住吉",lat:36.703388,lon:137.154641},{name:"花の木",lat:36.701263,lon:137.148957},{name:"西金屋",lat:36.697978,lon:137.147445},{name:"ｶﾞﾗｽ工房・ﾌｧﾐﾘｰﾊﾟｰｸ",lat:36.695652,lon:137.146288},{name:"杉谷公民館",lat:36.686065,lon:137.138747},{name:"富山大学附属病院",lat:36.680614,lon:137.140458},{name:"境野新公民館",lat:36.674925,lon:137.133414},{name:"平岡",lat:36.673178,lon:137.127223},{name:"開ヶ丘",lat:36.672729,lon:137.114069},{name:"三熊",lat:36.669882,lon:137.10785},{name:"山本",lat:36.676968,lon:137.110444},{name:"山本公民館",lat:36.68159,lon:137.116976},{name:"西押川",lat:36.682754,lon:137.121852},{name:"北押川",lat:36.682107,lon:137.126828},{name:"古沢地区センター",lat:36.691234,lon:137.140533},{name:"栃谷",lat:36.694336,lon:137.135127},{name:"佐伯クリニック",lat:36.695161,lon:137.133252},{name:"特老ホームくれは苑",lat:36.699917,lon:137.131161},{name:"中老田公民館",lat:36.70523,lon:137.130779},{name:"JA南部支店",lat:36.70802,lon:137.132673},{name:"東老田",lat:36.707821,lon:137.138504},{name:"願海寺",lat:36.717141,lon:137.131834},{name:"大阪屋ショップ呉羽店",lat:36.721286,lon:137.146885},{name:"すぎき整形外科",lat:36.721894,lon:137.14942},{name:"アルビス呉羽本郷店",lat:36.723603,lon:137.149936},{name:"芸術創造センター",lat:36.71619,lon:137.164756},{name:"呉羽駅（到着）",lat:36.718089,lon:137.165879}];
+var MK_FLIGHTS={"2":["09:30","09:31","09:32","09:33","09:33","09:34","09:35","09:36","09:36","09:37","09:38","09:39","09:42","09:47","09:50","09:51","09:57","09:58","09:59","10:00","10:01","10:02","10:06","10:07","10:08","10:10","10:12","10:13","10:14","10:17","10:21","10:22","10:23","10:28",null],"4":["11:50","11:51","11:52","11:53","11:53","11:54","11:55","11:56","11:56","11:57","11:58","11:59","12:02","12:07","12:10","12:11","12:17","12:18","12:19","12:20","12:21","12:22","12:26","12:27","12:28","12:30","12:32","12:33","12:34","12:37","12:41","12:42","12:43","12:48",null],"6":["14:10","14:11","14:12","14:13","14:13","14:14","14:15","14:16","14:16","14:17","14:18","14:19","14:22","14:27","14:30","14:31","14:37","14:38","14:39","14:40","14:41","14:42","14:46","14:47","14:48","14:50","14:52","14:53","14:54","14:57","15:01","15:02","15:03","15:08",null],"8":["16:30","16:31","16:32","16:33","16:33","16:34","16:35","16:36","16:36","16:37","16:38","16:39","16:42","16:47","16:50","16:51","16:57","16:58","16:59","17:00","17:01","17:02","17:06","17:07","17:08","17:10","17:12","17:13","17:14","17:17","17:21","17:22","17:23","17:28",null]};
 
-var OI_T_STOPS = [
-  "呉羽駅","呉羽小学校","松野リウマチ整形外科","郵便局・アルビス呉羽店","わくぐり内科医院",
-  "追分茶屋","ケアサポート・まき","吉作","住吉","花の木",
-  "西金屋","ガス工房・ファミリーパーク","杉谷公民館","富山大学附属病院","境野新公民館",
-  "平岡","間ヶ丘","西押川","北押川","緑化植物公園",
-  "山本公民館","栃谷","佐伯クリニック","特老ホームくれは苑","東老田",
-  "老田地区センター","老田小学校","西二俣公民館","梅雲苑","すぎき整形外科",
-  "大阪屋ショップ呉羽店","アルビス呉羽本郷店","梨雲苑","中道歯科医院","呉羽北本町北",
-  "呉羽駅"
-];
+var OIM_STOPS=["開ヶ丘","三熊","山本","山本公民館","西押川","北押川","平岡","境野新公民館","杉谷郵便局","古沢保育所","栃谷","老田小学校","東老田","吉作北","呉羽本町南","呉羽駅（到着）"];
+var OIM_GEO=[{name:"開ヶ丘",lat:36.672729,lon:137.114069},{name:"三熊",lat:36.669882,lon:137.10785},{name:"山本",lat:36.676968,lon:137.110444},{name:"山本公民館",lat:36.68159,lon:137.116976},{name:"西押川",lat:36.682754,lon:137.121852},{name:"北押川",lat:36.682107,lon:137.126828},{name:"平岡",lat:36.673122,lon:137.127292},{name:"境野新公民館",lat:36.674949,lon:137.133373},{name:"杉谷郵便局",lat:36.683548,lon:137.137893},{name:"古沢保育所",lat:36.690969,lon:137.140101},{name:"栃谷",lat:36.694336,lon:137.135127},{name:"老田小学校",lat:36.708173,lon:137.131543},{name:"東老田",lat:36.707821,lon:137.138504},{name:"吉作北",lat:36.711267,lon:137.162174},{name:"呉羽本町南",lat:36.713081,lon:137.163186},{name:"呉羽駅（到着）",lat:36.718089,lon:137.165879}];
+var OIM_FLIGHTS={"通学":["07:18","07:20","07:21","07:23","07:24","07:25","07:28","07:29","07:31","07:33","07:35","07:38","07:41","07:46","07:47",null]};
 
-var OI_M_STOPS = [
-  "呉羽駅","呉羽小学校","松野リウマチ整形外科","カーマ・アルビス呉羽売場","わくぐり内科医院",
-  "追分茶屋公民館","ケアサポート・まき","吉作","住吉","花の木",
-  "西金屋","ガス工房・ファミリーパーク","杉谷公民館","富山大学附属病院","境野新公民館",
-  "平岡","間ヶ丘","三熊","山本","山本公民館",
-  "西押川","北押川","古沢地区センター","古沢保育所","佐伯クリニック",
-  "特老ホームくれは苑","中老田公民館","JA南部支店","東老田","東老田南",
-  "大阪屋ショップ呉羽店","すぎき整形外科","アルビス呉羽本郷店","芸術創造センター","呉羽駅"
-];
-
-// ===================================================
-// 3. 時刻表データ（バス停名・buildStops定義後に記述）
-// ===================================================
-var SCHEDULES = {
-
-  nagaoka: {
-    name: "長岡・寒江ルート",
-    badge: "長岡・寒江",
-    singleFlight: false,
-    flights: {
-      1:  buildStops(NK_STOPS, [8,20, 8,22, 8,33, 8,25, 8,26, 8,28, 8,29, 8,30, 8,34, 8,35, 8,36, null,null, null,null, 8,46, 8,54, 8,56, 8,57, 8,58, 9,0, 9,1, 9,2, 9,4, 9,5, 9,7, 9,10, 9,12, 9,14, 9,15, 9,16, 9,18, 9,18, 9,20, 9,24]),
-      2:  buildStops(NK_STOPS, [9,30, 9,32, 9,33, 9,35, 9,36, 9,38, 9,39, 9,40, 9,44, 9,45, 9,46, 9,49, 9,54, 9,58, 10,7, 10,10, 10,11, 10,12, 10,13, 10,14, 10,15, 10,17, 10,18, 10,19, 10,21, 10,23, 10,25, 10,26, 10,27, 10,29, 10,29, 10,30, 10,35]),
-      3:  buildStops(NK_STOPS, [10,40, 10,42, 10,43, 10,45, 10,46, 10,48, 10,49, 10,50, 10,54, 10,55, 10,59, 11,4, 11,6, 11,8, 11,17, 11,21, 11,21, 11,22, 11,23, 11,24, 11,25, 11,26, 11,27, 11,28, 11,31, 11,32, 11,33, 11,36, 11,37, 11,38, 11,39, 11,40, 11,45]),
-      4:  buildStops(NK_STOPS, [11,50, 11,52, 11,53, 11,55, 11,56, 11,58, 11,59, 12,0, 12,4, 12,5, 12,9, 12,14, 12,16, 12,18, 12,27, 12,31, 12,31, 12,32, 12,33, 12,34, 12,35, 12,37, 12,38, 12,38, 12,41, 12,43, 12,43, 12,46, 12,47, 12,47, 12,46, 12,46, 12,55]),
-      5:  buildStops(NK_STOPS, [13,0, 13,2, 13,3, 13,5, 13,6, 13,8, 13,9, 13,10, 13,14, 13,15, 13,19, 13,24, 13,28, 13,28, 13,37, 13,41, 13,37, 13,44, 13,41, 13,42, 13,45, 13,45, 13,45, 13,43, 13,45, 13,48, 13,53, 13,53, 13,53, 13,55, 13,56, 13,57, 14,5]),
-      6:  buildStops(NK_STOPS, [14,10, 14,12, 14,13, 14,15, 14,16, 14,18, 14,19, 14,20, 14,24, 14,25, 14,26, 14,29, 14,34, 14,38, 14,47, 14,47, 14,47, 14,47, 14,51, 14,52, 14,53, 14,54, 14,55, 14,54, 14,55, 14,57, 15,1, 15,3, 15,5, 15,5, 15,5, 15,7, 15,15]),
-      7:  buildStops(NK_STOPS, [16,30, 16,32, 16,33, 16,35, 16,36, 16,38, 16,39, 16,40, 16,44, 16,45, 16,46, 16,46, 16,54, 16,54, 17,7, 17,7, 17,7, 17,9, 17,9, 17,11, 17,13, 17,15, 17,18, 17,19, 17,21, 17,23, 17,23, 17,25, 17,26, 17,26, 17,27, 17,29, 17,35]),
-      8:  buildStops(NK_STOPS, [17,40, 17,42, 17,43, 17,45, 17,46, 17,48, 17,49, 17,50, 17,54, 17,55, 17,59, 18,4, 18,6, 18,8, 18,17, 18,17, 18,19, 18,19, 18,21, 18,22, 18,22, 18,24, 18,28, 18,29, 18,31, 18,33, 18,33, 18,36, 18,37, 18,37, 18,37, 18,39, 18,48]),
-      9:  buildStops(NK_STOPS, [18,50, 18,52, 18,53, 18,55, 18,56, 18,58, 18,59, 19,0, 19,4, 19,5, 19,6, null,null, null,null, 19,18, 19,25, 19,27, 19,27, 19,29, 19,31, 19,31, 19,34, 19,35, 19,38, 19,38, 19,41, 19,42, 19,43, 19,46, 19,47, 19,47, 19,48, 19,50, 19,55])
-    }
-  },
-
-  morning_nk: {
-    name: "長岡・寒江ルート（モーニング）",
-    badge: "長岡朝",
-    singleFlight: true,
-    stops: [
-      { name:"北代4区公民館",  time:"07:12" },
-      { name:"長岡新公民館",   time:"07:13" },
-      { name:"八ヶ山公民館",   time:"07:14" },
-      { name:"長岡小学校",     time:"07:15" },
-      { name:"加茂神社",       time:"07:17" },
-      { name:"北代会館",       time:"07:17" },
-      { name:"あさひホーム横", time:"07:20" },
-      { name:"北代藤ケ丘",     time:"07:21" },
-      { name:"JA呉羽支店",     time:"07:27" },
-      { name:"呉羽駅",         time:"07:30" },
-      { name:"大塚",           time:"07:35" },
-      { name:"大塚北(利波)",   time:"07:38" },
-      { name:"中沖北",         time:"07:39" },
-      { name:"中沖南",         time:"07:40" },
-      { name:"本郷中部",       time:"07:41" },
-      { name:"富山短期大学前", time:"07:44" },
-      { name:"あらき接骨院",   time:"07:46" },
-      { name:"願海寺",         time:"07:48" },
-      { name:"寒江口",         time:"07:50" },
-      { name:"野口",           time:"07:51" },
-      { name:"しぶたに医院",   time:"07:55" },
-      { name:"呉羽駅",         time:"07:57", note:"終点" }
-    ]
-  },
-
-  oita: {
-    name: "老田・古沢・池多ルート（通常便）",
-    badge: "老田通常",
-    singleFlight: false,
-    flights: {
-      1:  buildStops(OI_T_STOPS, [8,20, 8,21, 8,22, 8,23, 8,24, 8,25, 8,25, 8,26, 8,27, 8,28, 8,28, 8,29, 8,34, 8,34, 8,35, 8,37, 8,40, 8,41, 8,45, 8,44, 8,48, 8,52, 8,55, 8,57, 8,58, 8,59, 9,4, null,null, 9,11, 9,18, 9,19, 9,20, 9,20, 9,24, 9,24]),
-      3:  buildStops(OI_T_STOPS, [10,0, 10,1, 10,2, 10,3, 10,3, 10,5, 10,5, 10,6, 10,7, 10,8, 10,8, 10,9, 10,14, 10,14, 10,15, 10,17, 10,20, 10,21, 10,25, 10,24, 10,28, 10,32, 10,35, 10,37, 10,38, 10,39, 10,44, null,null, 10,51, 10,58, 10,59, 11,0, 11,0, 11,4, 11,4]),
-      5:  buildStops(OI_T_STOPS, [13,0, 13,1, 13,2, 13,3, 13,3, 13,5, 13,5, 13,6, 13,7, 13,8, 13,8, 13,9, 13,14, 13,14, 13,15, 13,17, 13,20, 13,21, 13,25, 13,24, 13,28, 13,32, 13,35, 13,37, 13,38, 13,39, 13,44, null,null, 13,51, 13,58, 13,59, 14,0, 14,0, 14,4, 14,4]),
-      7:  buildStops(OI_T_STOPS, [15,20, 15,21, 15,22, 15,23, 15,23, 15,25, 15,25, 15,26, 15,27, 15,28, 15,28, 15,29, 15,34, 15,34, 15,35, 15,37, 15,40, 15,41, 15,45, 15,44, 15,48, 15,52, 15,55, 15,57, 15,58, 15,59, 16,4, null,null, 16,11, 16,18, 16,19, 16,20, 16,20, 16,24, 16,24]),
-      9:  buildStops(OI_T_STOPS, [17,40, 17,41, 17,42, 17,43, 17,43, 17,45, 17,45, 17,46, 17,47, 17,48, 17,48, 17,49, 17,54, 17,54, 17,55, 17,57, 18,0, 18,1, 18,5, 18,4, 18,8, 18,12, 18,15, 18,17, 18,18, 18,19, 18,24, null,null, 18,31, 18,38, 18,39, 18,40, 18,40, 18,44, 18,44]),
-      10: buildStops(OI_T_STOPS, [18,50, 18,51, 18,52, 18,53, 18,53, 18,55, 18,55, 18,56, 18,57, 18,58, 18,58, 18,59, 19,4, 19,4, 19,5, 19,7, 19,10, 19,11, 19,15, 19,14, 19,18, 19,22, 19,25, 19,27, 19,28, 19,29, 19,34, null,null, 19,41, 19,48, 19,49, 19,50, 19,50, 19,54, 19,54])
-    }
-  },
-
-  mikuma: {
-    name: "老田・古沢・池多ルート（三熊便）",
-    badge: "三熊便",
-    singleFlight: false,
-    flights: {
-      2:  buildStops(OI_M_STOPS, [9,30, 9,31, 9,31, 9,33, 9,33, 9,34, 9,35, 9,36, 9,37, 9,38, 9,38, 9,39, 9,44, 9,47, 9,51, 9,51, 9,54, 9,57, 10,1, 10,3, 10,5, 10,7, 10,8, 10,9, 10,10, 10,11, 10,13, 10,14, 10,16, 10,17, 10,20, 10,23, 10,28, 10,28, 11,11]),
-      4:  buildStops(OI_M_STOPS, [11,50, 11,51, 11,51, 11,53, 11,53, 11,54, 11,55, 11,56, 11,57, 11,58, 11,58, 11,59, 12,4, 12,7, 12,11, 12,11, 12,14, 12,17, 12,21, 12,23, 12,25, 12,27, 12,28, 12,29, 12,30, 12,31, 12,33, 12,34, 12,36, 12,37, 12,40, 12,43, 12,48, 12,48, 13,31]),
-      6:  buildStops(OI_M_STOPS, [14,50, 14,51, 14,51, 14,53, 14,53, 14,54, 14,55, 14,56, 14,57, 14,58, 14,58, 14,59, 15,4, 15,7, 15,11, 15,11, 15,14, 15,17, 15,21, 15,23, 15,25, 15,27, 15,28, 15,29, 15,30, 15,31, 15,33, 15,34, 15,36, 15,37, 15,40, 15,43, 15,48, 15,48, 16,31]),
-      8:  buildStops(OI_M_STOPS, [16,30, 16,31, 16,31, 16,33, 16,33, 16,34, 16,35, 16,36, 16,37, 16,38, 16,38, 16,39, 16,44, 16,47, 16,51, 16,51, 16,54, 16,57, 17,1, 17,3, 17,5, 17,7, 17,8, 17,9, 17,10, 17,11, 17,13, 17,14, 17,16, 17,17, 17,20, 17,23, 17,28, 17,28, 18,11])
-    }
-  },
-
-  morning_oi: {
-    name: "老田・古沢・池多ルート（モーニング）",
-    badge: "老田朝",
-    singleFlight: true,
-    stops: [
-      { name:"開ヶ丘",       time:"07:18" },
-      { name:"三熊",         time:"07:20" },
-      { name:"山本",         time:"07:21" },
-      { name:"山本公民館",   time:"07:23" },
-      { name:"西押川",       time:"07:24" },
-      { name:"北押川",       time:"07:25" },
-      { name:"平岡",         time:"07:28" },
-      { name:"境野新公民館", time:"07:29" },
-      { name:"杉谷郵便局",   time:"07:30" },
-      { name:"古沢保育所",   time:"07:33" },
-      { name:"栃谷",         time:"07:36" },
-      { name:"杉田小学校",   time:"07:38" },
-      { name:"東老田",       time:"07:41" },
-      { name:"吉作北",       time:"07:46" },
-      { name:"呉羽北本町北", time:"07:47" },
-      { name:"呉羽駅",       time:"07:52", note:"終点" }
-    ]
-  }
+// ルート定義
+var ROUTES = {
+  nk:  {name:'長岡・寒江ルート',   badge:'長岡・寒江', stops:NK_STOPS,  geo:NK_GEO,  flights:NK_FLIGHTS,  single:false},
+  nkm: {name:'長岡・寒江 モーニング', badge:'長岡朝',   stops:NKM_STOPS, geo:NKM_GEO, flights:NKM_FLIGHTS, single:true},
+  oi:  {name:'老田・古沢・池多 通常', badge:'老田通常',  stops:OI_STOPS,  geo:OI_GEO,  flights:OI_FLIGHTS,  single:false},
+  mk:  {name:'老田・古沢・池多 三熊', badge:'三熊便',    stops:MK_STOPS,  geo:MK_GEO,  flights:MK_FLIGHTS,  single:false},
+  oim: {name:'老田・古沢・池多 モーニング', badge:'老田朝', stops:OIM_STOPS, geo:OIM_GEO, flights:OIM_FLIGHTS, single:true}
 };
 
-// ===================================================
-// 4. アプリ状態
-// ===================================================
-var selectedRoute = null;
-var selectedFlight = null;
-var currentStopIdx = 0;
-var activeStops = [];
-var clockTimer = null;
+// ===== 状態 =====
+var selectedRoute=null, selectedFlight=null;
+var currentStopIdx=0, activeStops=[], activeGeo=[];
+var clockTimer=null, gpsWatchId=null;
+var currentLat=null, currentLon=null;
 
-// ===================================================
-// 5. 便選択ロジック
-// ===================================================
+// ===== 便選択 =====
 function selectRoute(key, btn) {
-  selectedRoute = key;
-  selectedFlight = null;
-  document.querySelectorAll('.route-btn').forEach(function(b) { b.classList.remove('active'); });
+  selectedRoute=key; selectedFlight=null;
+  document.querySelectorAll('.sel-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-
-  var sc = SCHEDULES[key];
-  var fsec = document.getElementById('flight-section');
-  var grid = document.getElementById('flight-grid');
-  grid.innerHTML = '';
-
-  if (sc.singleFlight) {
-    fsec.style.display = 'none';
-    selectedFlight = 'single';
-    document.getElementById('start-btn').disabled = false;
+  var r=ROUTES[key], grid=document.getElementById('flight-grid');
+  grid.innerHTML='';
+  if(r.single) {
+    selectedFlight='single';
+    document.getElementById('flight-section').style.display='none';
+    document.getElementById('start-btn').disabled=false;
   } else {
-    fsec.style.display = 'block';
-    Object.keys(sc.flights).forEach(function(fn) {
-      var firstTime = sc.flights[fn][0] ? sc.flights[fn][0].time : '';
-      var b = document.createElement('button');
-      b.className = 'flight-btn';
-      b.innerHTML = fn + '便<small>' + firstTime + '</small>';
-      b.onclick = (function(f, el) {
-        return function() { selectFlight(f, el); };
-      })(fn, b);
+    document.getElementById('flight-section').style.display='block';
+    Object.keys(r.flights).forEach(function(fn){
+      var times=r.flights[fn], first=times[0]||'';
+      var b=document.createElement('button');
+      b.className='flight-btn';
+      b.innerHTML=fn+'便<small>'+first+'</small>';
+      b.onclick=(function(f,el){return function(){selectFlight(f,el);};})(fn,b);
       grid.appendChild(b);
     });
-    document.getElementById('start-btn').disabled = true;
+    document.getElementById('start-btn').disabled=true;
   }
 }
 
 function selectFlight(fn, btn) {
-  selectedFlight = fn;
-  document.querySelectorAll('.flight-btn').forEach(function(b) { b.classList.remove('active'); });
+  selectedFlight=fn;
+  document.querySelectorAll('.flight-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-  document.getElementById('start-btn').disabled = false;
+  document.getElementById('start-btn').disabled=false;
 }
 
+// ===== 運行開始 =====
 function startRun() {
-  var sc = SCHEDULES[selectedRoute];
-  activeStops = sc.singleFlight ? sc.stops : sc.flights[selectedFlight];
-  currentStopIdx = 0;
-
-  document.getElementById('rte-badge').textContent = sc.badge;
-  var fn = (selectedFlight === 'single') ? '' : ('　' + selectedFlight + '便');
-  document.getElementById('rte-name').textContent = sc.name + fn;
-
-  document.getElementById('selector').style.display = 'none';
-  var rs = document.getElementById('run-screen');
-  rs.style.display = 'flex';
-  rs.style.flexDirection = 'column';
-
-  renderStops();
-  startClock();
-  initGPS();
+  var r=ROUTES[selectedRoute];
+  var times=r.single ? Object.values(r.flights)[0] : r.flights[selectedFlight];
+  activeStops=[]; activeGeo=[];
+  for(var i=0;i<r.stops.length;i++){
+    activeStops.push({name:r.stops[i], time:times[i]||null});
+    activeGeo.push(r.geo[i]||{lat:0,lon:0});
+  }
+  currentStopIdx=0;
+  document.getElementById('rte-badge').textContent=r.badge;
+  var fn=r.single?'　通学便':'　'+selectedFlight+'便';
+  document.getElementById('rte-name').textContent=r.name+fn;
+  document.getElementById('selector').style.display='none';
+  var rs=document.getElementById('run-screen');
+  rs.style.display='flex'; rs.style.flexDirection='column';
+  renderStops(); startClock(); initGPS(); startWakeLock();
 }
 
 function goBack() {
-  document.getElementById('run-screen').style.display = 'none';
-  document.getElementById('selector').style.display = 'flex';
+  document.getElementById('run-screen').style.display='none';
+  document.getElementById('selector').style.display='flex';
   clearInterval(clockTimer);
+  if(gpsWatchId!==null){navigator.geolocation.clearWatch(gpsWatchId);gpsWatchId=null;}
 }
 
-// ===================================================
-// 6. 運行画面レンダリング
-// ===================================================
-function diffLabel(schedMin) {
-  var d = Math.round(nowMin() - schedMin);
-  if (d <= -1) return { cls:'d-e', text: Math.abs(d) + '分早' };
-  if (d <=  2) return { cls:'d-o', text: '定刻' };
-  return { cls:'d-l', text: d + '分遅' };
+function manualAdvance() {
+  if(currentStopIdx<activeStops.length-1){
+    currentStopIdx++;
+    document.getElementById('approach-banner').style.display='none';
+    renderStops();
+  }
+}
+
+// ===== GPS =====
+function initGPS() {
+  var dot=document.getElementById('gps-dot'), txt=document.getElementById('gps-text');
+  if(!navigator.geolocation){dot.className='gps-dot off';txt.textContent='GPS非対応';return;}
+  gpsWatchId=navigator.geolocation.watchPosition(
+    function(pos){
+      currentLat=pos.coords.latitude; currentLon=pos.coords.longitude;
+      dot.className='gps-dot';
+      txt.textContent='GPS取得済 ±'+Math.round(pos.coords.accuracy)+'m';
+      checkApproach(); updateDistances();
+    },
+    function(err){
+      dot.className='gps-dot off';
+      if(err.message&&err.message.indexOf('permissions policy')!==-1) txt.textContent='GPS：プレビュー環境では無効（実機では動作します）';
+      else if(err.code===1) txt.textContent='GPS：位置情報の許可が必要です';
+      else txt.textContent='GPS取得失敗';
+    },
+    {enableHighAccuracy:true,maximumAge:3000,timeout:10000}
+  );
+}
+
+function checkApproach() {
+  if(currentLat===null||currentStopIdx>=activeStops.length-1) return;
+  var cg=activeGeo[currentStopIdx], ng=activeGeo[currentStopIdx+1];
+  if(!ng||!ng.lat) return;
+  var dc=calcDist(currentLat,currentLon,cg.lat,cg.lon);
+  var dn=calcDist(currentLat,currentLon,ng.lat,ng.lon);
+  if(dn<50&&dn<dc){currentStopIdx++;document.getElementById('approach-banner').style.display='none';renderStops();return;}
+  var banner=document.getElementById('approach-banner');
+  if(dn<150){banner.textContent='🚏 まもなく '+activeStops[currentStopIdx+1].name+'（'+Math.round(dn)+'m）';banner.style.display='block';}
+  else{banner.style.display='none';}
+}
+
+function updateDistances() {
+  if(currentLat===null) return;
+  [currentStopIdx,currentStopIdx+1].forEach(function(i){
+    if(i>=activeGeo.length) return;
+    var el=document.getElementById('dist-'+i);
+    if(!el||!activeGeo[i]||!activeGeo[i].lat) return;
+    el.textContent=Math.round(calcDist(currentLat,currentLon,activeGeo[i].lat,activeGeo[i].lon))+'m';
+  });
+}
+
+// ===== スリープ防止 =====
+function startWakeLock() {
+  try {
+    var v=document.createElement('video');
+    v.setAttribute('playsinline',''); v.setAttribute('muted','');
+    v.style.cssText='position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;';
+    var s=document.createElement('source');
+    s.src='data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAs1tZGF0AAACrgYF//+q3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE1MiByMjg1NCBlOWE1OTAzIC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAxNyAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTMgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MzoweDExMyBtZT1oZXggc3VibWU9NyBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0xIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MSA4eDhkY3Q9MSBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0tMiB0aHJlYWRzPTMgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGhyZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2ludHJhPTAgYmZyYW1lcz0zIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MSB3ZWlnaHRiPTEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTI1MCBrZXlpbnRfbWluPTI1IHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29rYWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02OSBxcHN0ZXA9NCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAAPZWxpYnggABBAABycAAAABmNvbHIBAAAA';
+    s.type='video/mp4'; v.appendChild(s); v.loop=true;
+    document.body.appendChild(v); v.play().catch(function(){});
+  } catch(e){}
+}
+
+// ===== レンダリング =====
+function diffLabel(sec){
+  var d=nowSec()-sec;
+  if(d<0) return{cls:'d-e',text:Math.ceil(-d/60)+'分早'};
+  if(d<60) return{cls:'d-o',text:'定刻'};
+  return{cls:'d-l',text:Math.floor(d/60)+'分遅'};
 }
 
 function renderStops() {
-  var list = document.getElementById('stop-list');
-  list.innerHTML = '';
-
-  activeStops.forEach(function(stop, i) {
-    var div = document.createElement('div');
-    div.className = 'stop-item';
-    div.id = 's' + i;
-
-    var isPassed  = i < currentStopIdx;
-    var isCurrent = i === currentStopIdx;
-    var isNext    = i === currentStopIdx + 1;
-
-    if (isPassed)  div.classList.add('passed');
-    if (isCurrent) div.classList.add('current');
-    if (isNext)    div.classList.add('next');
-
-    var schedMin = timeToMin(stop.time);
-    var diff = (schedMin && isCurrent) ? diffLabel(schedMin) : null;
-
-    div.innerHTML =
-      '<div class="timeline">' +
-        '<div class="tl-top"></div>' +
-        '<div class="tl-dot"></div>' +
-        '<div class="tl-bot"></div>' +
-      '</div>' +
-      '<div class="stop-content">' +
-        '<div class="stop-info">' +
-          '<div class="stop-num">' + (i + 1) + ' / ' + activeStops.length + '</div>' +
-          '<div class="stop-name">' + stop.name + '</div>' +
-          (stop.note ? '<div class="stop-note">📌 ' + stop.note + '</div>' : '') +
-        '</div>' +
-        '<div class="time-block">' +
-          '<div class="sched-time">' + (stop.time || '--:--') + '</div>' +
-          (diff ? '<div class="diff-time ' + diff.cls + '">' + diff.text + '</div>' : '') +
-        '</div>' +
+  var list=document.getElementById('stop-list');
+  list.innerHTML='';
+  var totalVisible = activeStops.filter(function(s){return s.time;}).length;
+  var visibleIdx = 0;
+  activeStops.forEach(function(stop,i){
+    var div=document.createElement('div');
+    div.className='stop-item'; div.id='s'+i;
+    var isPassed=i<currentStopIdx, isLast=i===currentStopIdx-1;
+    var isCurrent=i===currentStopIdx, isNext=i===currentStopIdx+1;
+    if(isPassed) div.classList.add('passed');
+    if(isLast)   div.classList.add('last');
+    if(isCurrent) div.classList.add('current');
+    if(isNext)    div.classList.add('next');
+    if(!stop.time) { list.appendChild(div); div.style.display='none'; return; }
+    visibleIdx++;
+    var sec=timeToSec(stop.time);
+    var diff=(sec&&isCurrent)?diffLabel(sec):null;
+    var showDist=isCurrent||isNext;
+    div.innerHTML=
+      '<div class="timeline"><div class="tl-top"></div><div class="tl-dot"></div><div class="tl-bot"></div></div>'+
+      '<div class="stop-content">'+
+        '<div class="stop-info">'+
+          '<div class="stop-num">'+visibleIdx+' / '+totalVisible+'</div>'+
+          '<div class="stop-name">'+stop.name+'</div>'+
+          (showDist?'<div class="stop-dist" id="dist-'+i+'">---m</div>':'')+
+        '</div>'+
+        '<div class="time-block">'+
+          '<div class="sched-time">'+(stop.time||'―')+'</div>'+
+          (diff?'<div class="diff-time '+diff.cls+'">'+diff.text+'</div>':'')+
+        '</div>'+
       '</div>';
-
-    if (isCurrent) {
-      div.addEventListener('click', (function(idx) {
-        return function() {
-          if (currentStopIdx < activeStops.length - 1) {
-            currentStopIdx++;
-            renderStops();
-          }
-        };
-      })(i));
-      div.style.cursor = 'pointer';
-    }
-
+    if(isCurrent){div.addEventListener('click',function(){manualAdvance();});div.style.cursor='pointer';}
     list.appendChild(div);
   });
-
-  updateFloat();
   updateDelay();
-  var el = document.getElementById('s' + currentStopIdx);
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function updateFloat() {
-  var ni = currentStopIdx + 1;
-  if (ni < activeStops.length) {
-    document.getElementById('float-stop').textContent = activeStops[ni].name;
-    document.getElementById('float-time').textContent = activeStops[ni].time || '--:--';
-  } else {
-    var cur = activeStops[currentStopIdx];
-    document.getElementById('float-stop').textContent = (cur ? cur.name : '') + '（終点）';
-    document.getElementById('float-time').textContent = cur ? cur.time : '--:--';
-  }
+  if(currentLat!==null) updateDistances();
+  var el=document.getElementById('s'+currentStopIdx);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
 }
 
 function updateDelay() {
-  var cur = activeStops[currentStopIdx];
-  if (!cur || !cur.time) return;
-  var d = Math.round(nowMin() - timeToMin(cur.time));
-  var badge = document.getElementById('delay-badge');
-  if (d <= -1)     { badge.textContent = Math.abs(d) + '分早発'; badge.className = 'delay-badge d-ok'; }
-  else if (d <= 2) { badge.textContent = '定刻';                 badge.className = 'delay-badge d-ok'; }
-  else if (d <= 5) { badge.textContent = d + '分遅延';           badge.className = 'delay-badge d-warn'; }
-  else             { badge.textContent = d + '分遅延';           badge.className = 'delay-badge d-late'; }
+  var cur=activeStops[currentStopIdx]; if(!cur||!cur.time) return;
+  var d=nowSec()-timeToSec(cur.time);
+  var badge=document.getElementById('delay-badge');
+  if(d<0){badge.textContent=Math.ceil(-d/60)+'分早発';badge.className='delay-badge d-late';}
+  else if(d<60){badge.textContent='定刻';badge.className='delay-badge d-ok';}
+  else{badge.textContent=Math.floor(d/60)+'分遅延';badge.className='delay-badge d-ok';}
 }
 
 function startClock() {
-  function tick() {
-    var n = new Date();
-    document.getElementById('clock').textContent =
-      pad(n.getHours()) + ':' + pad(n.getMinutes()) + ':' + pad(n.getSeconds());
+  function tick(){
+    var n=new Date();
+    document.getElementById('clock').textContent=pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds());
     updateDelay();
   }
-  tick();
-  clockTimer = setInterval(tick, 1000);
-}
-
-function initGPS() {
-  var dot = document.getElementById('gps-dot');
-  var txt = document.getElementById('gps-text');
-  if (!navigator.geolocation) {
-    dot.className = 'gps-dot off';
-    txt.textContent = 'GPS非対応';
-    return;
-  }
-  navigator.geolocation.watchPosition(
-    function(pos) {
-      dot.className = 'gps-dot';
-      txt.textContent = 'GPS取得済 ' +
-        pos.coords.latitude.toFixed(5) + ', ' +
-        pos.coords.longitude.toFixed(5) +
-        '  ±' + Math.round(pos.coords.accuracy) + 'm';
-    },
-    function(err) {
-      dot.className = 'gps-dot off';
-      if (err.message && err.message.indexOf('permissions policy') !== -1) {
-        txt.textContent = 'GPS：プレビュー環境では無効（GitHub Pages実機では動作します）';
-      } else if (err.code === 1) {
-        txt.textContent = 'GPS：位置情報の許可が必要です';
-      } else {
-        txt.textContent = 'GPS取得失敗（' + err.message + '）';
-      }
-    },
-    { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
-  );
+  tick(); clockTimer=setInterval(tick,1000);
 }
 </script>
 </body>
