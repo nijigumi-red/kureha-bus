@@ -168,8 +168,10 @@ var ROUTES = {
 // ===== 状態 =====
 var selectedRoute=null, selectedFlight=null;
 var currentStopIdx=0, activeStops=[], activeGeo=[];
+var passedTimes=[];
 var clockTimer=null, gpsWatchId=null;
 var currentLat=null, currentLon=null;
+var wakeLock=null;
 
 // ===== 便選択 =====
 function selectRoute(key, btn) {
@@ -213,6 +215,7 @@ function startRun() {
     activeGeo.push(r.geo[i]||{lat:0,lon:0});
   }
   currentStopIdx=0;
+  passedTimes=[];
   document.getElementById('rte-badge').textContent=r.badge;
   var fn=r.single?'　通学便':'　'+selectedFlight+'便';
   document.getElementById('rte-name').textContent=r.name+fn;
@@ -231,6 +234,7 @@ function goBack() {
 
 function manualAdvance() {
   if(currentStopIdx<activeStops.length-1){
+    passedTimes[currentStopIdx]=nowSec();
     currentStopIdx++;
     document.getElementById('approach-banner').style.display='none';
     renderStops();
@@ -254,7 +258,7 @@ function initGPS() {
       else if(err.code===1) txt.textContent='GPS：位置情報の許可が必要です';
       else txt.textContent='GPS取得失敗';
     },
-    {enableHighAccuracy:true,maximumAge:3000,timeout:10000}
+    {enableHighAccuracy:false,maximumAge:15000,timeout:20000}
   );
 }
 
@@ -264,7 +268,7 @@ function checkApproach() {
   if(!ng||!ng.lat) return;
   var dc=calcDist(currentLat,currentLon,cg.lat,cg.lon);
   var dn=calcDist(currentLat,currentLon,ng.lat,ng.lon);
-  if(dn<50&&dn<dc){currentStopIdx++;document.getElementById('approach-banner').style.display='none';renderStops();return;}
+  if(dn<50&&dn<dc){passedTimes[currentStopIdx]=nowSec();currentStopIdx++;document.getElementById('approach-banner').style.display='none';renderStops();return;}
   var banner=document.getElementById('approach-banner');
   if(dn<150){banner.textContent='🚏 まもなく '+activeStops[currentStopIdx+1].name+'（'+Math.round(dn)+'m）';banner.style.display='block';}
   else{banner.style.display='none';}
@@ -280,16 +284,34 @@ function updateDistances() {
   });
 }
 
-// ===== スリープ防止 =====
+// ===== スリープ防止（複合方式）=====
 function startWakeLock() {
+  if('wakeLock' in navigator) {
+    navigator.wakeLock.request('screen').then(function(lock){
+      wakeLock=lock;
+      document.addEventListener('visibilitychange', function(){
+        if(document.visibilityState==='visible'){
+          navigator.wakeLock.request('screen').then(function(l){wakeLock=l;}).catch(function(){});
+        }
+      });
+    }).catch(function(){ startCanvasWakeLock(); });
+  } else {
+    startCanvasWakeLock();
+  }
+}
+
+function startCanvasWakeLock() {
+  var canvas=document.createElement('canvas');
+  canvas.width=1; canvas.height=1;
+  canvas.style.cssText='position:fixed;width:1px;height:1px;opacity:0.01;top:0;left:0;pointer-events:none;z-index:-1;';
+  document.body.appendChild(canvas);
+  var ctx=canvas.getContext('2d');
+  var tick=0;
+  function draw(){ tick++; ctx.fillStyle=(tick%2===0)?'#000001':'#000000'; ctx.fillRect(0,0,1,1); requestAnimationFrame(draw); }
+  requestAnimationFrame(draw);
   try {
-    var v=document.createElement('video');
-    v.setAttribute('playsinline',''); v.setAttribute('muted','');
-    v.style.cssText='position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;';
-    var s=document.createElement('source');
-    s.src='data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAs1tZGF0AAACrgYF//+q3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE1MiByMjg1NCBlOWE1OTAzIC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAxNyAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTMgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MzoweDExMyBtZT1oZXggc3VibWU9NyBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0xIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MSA4eDhkY3Q9MSBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0tMiB0aHJlYWRzPTMgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGhyZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2ludHJhPTAgYmZyYW1lcz0zIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MSB3ZWlnaHRiPTEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTI1MCBrZXlpbnRfbWluPTI1IHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29rYWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02OSBxcHN0ZXA9NCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAAPZWxpYnggABBAABycAAAABmNvbHIBAAAA';
-    s.type='video/mp4'; v.appendChild(s); v.loop=true;
-    document.body.appendChild(v); v.play().catch(function(){});
+    var AudioCtx=window.AudioContext||window.webkitAudioContext;
+    if(AudioCtx){ var ac=new AudioCtx(); setInterval(function(){ var buf=ac.createBuffer(1,1,22050); var src=ac.createBufferSource(); src.buffer=buf; src.connect(ac.destination); src.start(); },30000); }
   } catch(e){}
 }
 
@@ -318,7 +340,19 @@ function renderStops() {
     if(!stop.time) { list.appendChild(div); div.style.display='none'; return; }
     visibleIdx++;
     var sec=timeToSec(stop.time);
-    var diff=(sec&&isCurrent)?diffLabel(sec):null;
+    var diff=null;
+    if(isCurrent){
+      // 現在停留所：次のバス停基準
+      var ni=currentStopIdx+1;
+      while(ni<activeStops.length && !activeStops[ni].time) ni++;
+      if(ni<activeStops.length){ var ns=timeToSec(activeStops[ni].time); diff=diffLabel(ns); }
+    } else if(isLast && passedTimes[i]!==undefined && sec){
+      // 1つ前：実際の通過時刻で実績表示
+      var d=passedTimes[i]-sec;
+      if(d<0)       diff={cls:'d-e',text:Math.ceil(-d/60)+'分早'};
+      else if(d<60) diff={cls:'d-o',text:'定刻'};
+      else          diff={cls:'d-l',text:Math.floor(d/60)+'分遅'};
+    }
     var showDist=isCurrent||isNext;
     div.innerHTML=
       '<div class="timeline"><div class="tl-top"></div><div class="tl-dot"></div><div class="tl-bot"></div></div>'+
@@ -343,12 +377,15 @@ function renderStops() {
 }
 
 function updateDelay() {
-  var cur=activeStops[currentStopIdx]; if(!cur||!cur.time) return;
-  var d=nowSec()-timeToSec(cur.time);
+  var ni=currentStopIdx+1;
+  while(ni<activeStops.length && !activeStops[ni].time) ni++;
+  var target=(ni<activeStops.length)?activeStops[ni]:activeStops[currentStopIdx];
+  if(!target||!target.time) return;
+  var d=nowSec()-timeToSec(target.time);
   var badge=document.getElementById('delay-badge');
-  if(d<0){badge.textContent=Math.ceil(-d/60)+'分早発';badge.className='delay-badge d-late';}
+  if(d<0){badge.textContent=Math.ceil(-d/60)+'分早';badge.className='delay-badge d-late';}
   else if(d<60){badge.textContent='定刻';badge.className='delay-badge d-ok';}
-  else{badge.textContent=Math.floor(d/60)+'分遅延';badge.className='delay-badge d-ok';}
+  else{badge.textContent=Math.floor(d/60)+'分遅';badge.className='delay-badge d-ok';}
 }
 
 function startClock() {
